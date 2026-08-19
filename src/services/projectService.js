@@ -1,35 +1,41 @@
+import { db } from "./db";
 import { api } from "./api";
-import { mockProjects } from "../utils/mockData";
 
-const STORE_KEY = "taskflow_projects";
+function currentEmail() {
+  return db.getSession();
+}
 
 async function getProjects() {
   await api.wait();
-  return api.readStore(STORE_KEY, mockProjects);
+  const user = db.getUser(currentEmail());
+  return user?.projects || [];
 }
 
 async function createProject(data) {
   await api.wait();
-  const projects = api.readStore(STORE_KEY, mockProjects);
+  const email = currentEmail();
+  const user = db.getUser(email);
   const newProject = { id: Date.now(), ...data };
-  const updated = [...projects, newProject];
-  api.writeStore(STORE_KEY, updated);
+  const projects = [...(user.projects || []), newProject];
+  db.updateUser(email, { projects });
   return newProject;
 }
 
 async function updateProject(id, changes) {
   await api.wait();
-  const projects = api.readStore(STORE_KEY, mockProjects);
-  const updated = projects.map((p) => (p.id === id ? { ...p, ...changes } : p));
-  api.writeStore(STORE_KEY, updated);
-  return updated.find((p) => p.id === id);
+  const email = currentEmail();
+  const user = db.getUser(email);
+  const projects = user.projects.map((p) => (p.id === id ? { ...p, ...changes } : p));
+  db.updateUser(email, { projects });
+  return projects.find((p) => p.id === id);
 }
 
 async function deleteProject(id) {
   await api.wait();
-  const projects = api.readStore(STORE_KEY, mockProjects);
-  const updated = projects.filter((p) => p.id !== id);
-  api.writeStore(STORE_KEY, updated);
+  const email = currentEmail();
+  const user = db.getUser(email);
+  const projects = user.projects.filter((p) => p.id !== id);
+  db.updateUser(email, { projects });
   return true;
 }
 

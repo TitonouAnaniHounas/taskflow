@@ -14,7 +14,7 @@ export default function TaskCard({ task, projectName, onEdit, onDelete, onToggle
       <button
         onClick={onToggleStatus}
         className="text-xl mt-0.5"
-        aria-label="Changer le statut"
+        aria-label={`Changer le statut de la tâche : ${task.title}`}
       >
         {statusIcons[task.status]}
       </button>

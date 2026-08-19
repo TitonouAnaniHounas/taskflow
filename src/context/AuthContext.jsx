@@ -1,42 +1,55 @@
 import { createContext, useState, useEffect } from "react";
+import { db } from "../services/db";
 
 export const AuthContext = createContext(null);
-
-const STORAGE_KEY = "taskflow_user";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Au chargement de l'app, on vérifie si une session simulée existe déjà
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setUser(JSON.parse(stored));
+    const email = db.getSession();
+    if (email) {
+      const existing = db.getUser(email);
+      if (existing) setUser(existing);
     }
     setLoading(false);
   }, []);
 
-  function login({ email, firstName = "Hounas", lastName = "" }) {
-    const fakeUser = {
-      email,
-      firstName,
-      lastName,
-      role: "Frontend Developer",
-      memberSince: "August 2026",
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(fakeUser));
-    setUser(fakeUser);
+  function login({ email, password }) {
+    const existing = db.getUser(email);
+    if (!existing) {
+      throw new Error("Aucun compte trouvé avec cet email.");
+    }
+    if (existing.password !== password) {
+      throw new Error("Mot de passe incorrect.");
+    }
+    db.setSession(email);
+    setUser(existing);
+    return existing;
+  }
+
+  function register({ email, password, firstName, lastName }) {
+    const newUser = db.createUser({ email, password, firstName, lastName });
+    db.setSession(email);
+    setUser(newUser);
+    return newUser;
   }
 
   function logout() {
-    localStorage.removeItem(STORAGE_KEY);
+    db.clearSession();
     setUser(null);
+  }
+
+  function updateProfile(changes) {
+    const updated = db.updateUser(user.email, changes);
+    setUser(updated);
+    return updated;
   }
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, loading, login, logout }}
+      value={{ user, isAuthenticated: !!user, loading, login, register, logout, updateProfile }}
     >
       {children}
     </AuthContext.Provider>

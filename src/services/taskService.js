@@ -1,35 +1,41 @@
+import { db } from "./db";
 import { api } from "./api";
-import { mockTasks } from "../utils/mockData";
 
-const STORE_KEY = "taskflow_tasks";
+function currentEmail() {
+  return db.getSession();
+}
 
 async function getTasks() {
   await api.wait();
-  return api.readStore(STORE_KEY, mockTasks);
+  const user = db.getUser(currentEmail());
+  return user?.tasks || [];
 }
 
 async function createTask(data) {
   await api.wait();
-  const tasks = api.readStore(STORE_KEY, mockTasks);
+  const email = currentEmail();
+  const user = db.getUser(email);
   const newTask = { id: Date.now(), status: "todo", ...data };
-  const updated = [...tasks, newTask];
-  api.writeStore(STORE_KEY, updated);
+  const tasks = [...(user.tasks || []), newTask];
+  db.updateUser(email, { tasks });
   return newTask;
 }
 
 async function updateTask(id, changes) {
   await api.wait();
-  const tasks = api.readStore(STORE_KEY, mockTasks);
-  const updated = tasks.map((t) => (t.id === id ? { ...t, ...changes } : t));
-  api.writeStore(STORE_KEY, updated);
-  return updated.find((t) => t.id === id);
+  const email = currentEmail();
+  const user = db.getUser(email);
+  const tasks = user.tasks.map((t) => (t.id === id ? { ...t, ...changes } : t));
+  db.updateUser(email, { tasks });
+  return tasks.find((t) => t.id === id);
 }
 
 async function deleteTask(id) {
   await api.wait();
-  const tasks = api.readStore(STORE_KEY, mockTasks);
-  const updated = tasks.filter((t) => t.id !== id);
-  api.writeStore(STORE_KEY, updated);
+  const email = currentEmail();
+  const user = db.getUser(email);
+  const tasks = user.tasks.filter((t) => t.id !== id);
+  db.updateUser(email, { tasks });
   return true;
 }
 

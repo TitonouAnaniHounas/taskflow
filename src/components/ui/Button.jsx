@@ -2,7 +2,7 @@ export default function Button({ children, loading, variant = "primary", classNa
   const base = "w-full py-3 rounded-lg font-medium text-base transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-ink text-white hover:bg-ink-light",
+    primary: "bg-brand text-white hover:bg-brand-light",
     danger: "bg-brick text-white hover:opacity-90",
     ghost: "bg-transparent text-ink hover:bg-paper border border-border",
   };

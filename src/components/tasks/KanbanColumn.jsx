@@ -26,7 +26,9 @@ export default function KanbanColumn({ status, label, tasks, projectName, onDrag
       onDragOver={handleDragOver}
       onDragLeave={() => setIsOver(false)}
       onDrop={handleDrop}
-      className={`bg-paper rounded-2xl p-4 flex-1 min-w-[280px] ${columnStyles[status]}
+      role="region"
+      aria-label={`Colonne ${label}, ${tasks.length} tâche${tasks.length > 1 ? "s" : ""}`}
+      className={`bg-paper rounded-2xl p-4 h-full ${columnStyles[status]}
       ${isOver ? "ring-2 ring-amber" : ""} transition-shadow`}
     >
       <div className="flex items-center justify-between mb-4 px-1">

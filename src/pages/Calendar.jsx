@@ -91,8 +91,7 @@ export default function Calendar() {
                 key={i}
                 disabled={!day}
                 onClick={() => day && setSelectedDay(day)}
-                className={`min-h-[90px] rounded-lg border p-2 text-left align-top transition-colors
-                ${!day ? "border-transparent" : "border-border hover:border-amber cursor-pointer"}
+                className={`min-h-[52px] sm:min-h-[90px] rounded-lg border p-1.5 sm:p-2 text-left align-top transition-colors                ${!day ? "border-transparent" : "border-border hover:border-amber cursor-pointer"}
                 ${isToday ? "bg-amber/10 border-amber" : "bg-paper"}`}
               >
                 {day && (

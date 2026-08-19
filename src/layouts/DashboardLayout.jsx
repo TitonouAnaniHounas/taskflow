@@ -8,11 +8,19 @@ export default function DashboardLayout() {
 
   return (
     <div className="flex h-screen bg-paper">
+       <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200]
+        focus:bg-amber focus:text-ink focus:px-4 focus:py-2 focus:rounded-lg focus:font-medium"
+      >
+        Aller au contenu principal
+      </a>
+
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0">
         <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-6 md:p-10">
+        <main id="main-content" className="flex-1 overflow-y-auto p-6 md:p-10">
           <div className="max-w-7xl mx-auto space-y-8">
             <Outlet />
           </div>

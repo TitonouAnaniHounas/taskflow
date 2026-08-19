@@ -6,27 +6,52 @@
   --font-sans: "IBM Plex Sans", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
 
+  /* Couleur de texte + fonds : bascule en dark mode */
   --color-ink: #1C1F2E;
-  --color-ink-light: #2A2E42;
   --color-paper: #F1F0EC;
   --color-surface: #FFFFFF;
+  --color-border: #E4E2DC;
+  --color-muted: #6B6F76;
+
+  /* Couleur de marque fixe (sidebar, auth) : NE bascule PAS en dark mode */
+  --color-brand: #1C1F2E;
+  --color-brand-light: #2A2E42;
+
+  /* Accents : restent identiques dans les deux thèmes */
   --color-amber: #D9A441;
   --color-teal: #2F6F62;
   --color-brick: #C4453A;
-  --color-muted: #6B6F76;
-  --color-border: #E4E2DC;
+}
+
+.dark {
+  --color-ink: #ECEDF3;
+  --color-paper: #14151C;
+  --color-surface: #1E212E;
+  --color-border: #2A2D3A;
+  --color-muted: #9096A3;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--color-paper);
+  transition: background-color 0.2s ease;
 }
 
 html {
-  font-size: 17px; /* base à 16px par défaut, on remonte un peu */
+  font-size: 17px;
 }
 
-body {
-  font-family: var(--font-sans);
-  background-color: var(--color-paper);
+/* Focus clavier visible partout, mais pas au clic souris */
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

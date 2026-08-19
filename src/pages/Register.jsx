@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/ui/Input";
-import { useAuth } from "../hooks/useAuth";
 import Button from "../components/ui/Button";
+import { useAuth } from "../hooks/useAuth";
 import { isValidEmail, isValidPassword } from "../utils/validators";
 
 export default function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register } = useAuth();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -16,6 +16,7 @@ export default function Register() {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
@@ -37,18 +38,25 @@ export default function Register() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setApiError("");
     if (!validate()) return;
 
     setLoading(true);
     setTimeout(() => {
-      login({
-        email: form.email,
-        firstName: form.firstName,
-        lastName: form.lastName,
-      });
-      setLoading(false);
-      navigate("/dashboard");
-    }, 800);
+      try {
+        register({
+          email: form.email,
+          password: form.password,
+          firstName: form.firstName,
+          lastName: form.lastName,
+        });
+        navigate("/dashboard");
+      } catch (err) {
+        setApiError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }, 600);
   }
 
   return (
@@ -56,51 +64,21 @@ export default function Register() {
       <h1 className="font-display text-2xl font-bold text-ink mb-1">Créer un compte</h1>
       <p className="text-muted mb-6">Rejoins TaskFlow en quelques secondes.</p>
 
+      {apiError && (
+        <div className="bg-brick/10 text-brick text-sm rounded-lg px-4 py-3 mb-4">
+          {apiError}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} noValidate>
         <div className="grid grid-cols-2 gap-3">
-          <Input
-            label="Prénom"
-            name="firstName"
-            value={form.firstName}
-            onChange={handleChange}
-            error={errors.firstName}
-          />
-          <Input
-            label="Nom"
-            name="lastName"
-            value={form.lastName}
-            onChange={handleChange}
-            error={errors.lastName}
-          />
+          <Input label="Prénom" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} />
+          <Input label="Nom" name="lastName" value={form.lastName} onChange={handleChange} error={errors.lastName} />
         </div>
 
-        <Input
-          label="Email"
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          error={errors.email}
-          placeholder="toi@exemple.com"
-        />
-        <Input
-          label="Mot de passe"
-          type="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-          error={errors.password}
-          placeholder="••••••••"
-        />
-        <Input
-          label="Confirmation"
-          type="password"
-          name="confirmPassword"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          error={errors.confirmPassword}
-          placeholder="••••••••"
-        />
+        <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} error={errors.email} placeholder="toi@exemple.com" />
+        <Input label="Mot de passe" type="password" name="password" value={form.password} onChange={handleChange} error={errors.password} placeholder="••••••••" />
+        <Input label="Confirmation" type="password" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} error={errors.confirmPassword} placeholder="••••••••" />
 
         <Button type="submit" loading={loading} className="mt-2">
           Créer mon compte

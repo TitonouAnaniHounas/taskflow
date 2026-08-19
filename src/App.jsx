@@ -1,7 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
+import NotificationStack from "./components/ui/Notification";
 
 import DashboardLayout from "./layouts/DashboardLayout";
 import AuthLayout from "./layouts/AuthLayout";
@@ -16,38 +20,48 @@ import Calendar from "./pages/Calendar";
 import Team from "./pages/Team";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+    <ErrorBoundary>
+      <ThemeProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              <NotificationStack />
+              <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
+                <Route element={<AuthLayout />}>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                </Route>
 
-          <Route
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/projects/:id" element={<ProjectDetails />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+                <Route
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/projects/:id" element={<ProjectDetails />} />
+                  <Route path="/tasks" element={<Tasks />} />
+                  <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/team" element={<Team />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Route>
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </NotificationProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

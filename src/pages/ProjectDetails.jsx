@@ -8,6 +8,7 @@ import Modal from "../components/ui/Modal";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
+import { useNotification } from "../hooks/useNotification";
 
 const statusIcons = { todo: "☐", in_progress: "🔄", done: "✓" };
 
@@ -16,6 +17,7 @@ export default function ProjectDetails() {
   const navigate = useNavigate();
   const { projects, loading, error, reload, editProject, removeProject } = useProjects();
   const { tasks } = useTasks();
+  const { notify } = useNotification();
   const [editOpen, setEditOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -41,15 +43,17 @@ export default function ProjectDetails() {
   const done = projectTasks.filter((t) => t.status === "done").length;
   const percent = total ? Math.round((done / total) * 100) : 0;
 
-  async function handleEdit(data) {
+ async function handleEdit(data) {
     setSubmitting(true);
     await editProject(project.id, data);
+    notify("Project updated successfully");
     setSubmitting(false);
     setEditOpen(false);
   }
 
   async function handleDelete() {
     await removeProject(project.id);
+    notify(`"${project.name}" deleted`, "danger");
     navigate("/projects");
   }
 

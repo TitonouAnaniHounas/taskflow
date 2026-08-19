@@ -4,6 +4,7 @@ import { useProjects } from "../hooks/useProjects";
 import StatCard from "../components/dashboard/StatCard";
 import ProgressBar from "../components/dashboard/ProgressBar";
 import Loader from "../components/ui/Loader";
+import EmptyState from "../components/ui/EmptyState";
 import ErrorState from "../components/ui/ErrorState";
 import StatusChart from "../components/dashboard/StatusChart";
 import PriorityChart from "../components/dashboard/PriorityChart";
@@ -47,7 +48,7 @@ export default function Dashboard() {
   });
 
   const recentTasks = [...tasks].slice(-3).reverse();
-
+  const isEmpty = totalTasks === 0 && projects.length === 0;
   return (
     <div className="space-y-8">
       <div>
@@ -64,6 +65,14 @@ export default function Dashboard() {
         <StatCard label="In Progress" value={inProgressTasks} accent="amber" />
         <StatCard label="Overdue" value={overdueTasks} accent="brick" />
       </div>
+
+      {isEmpty && (
+        <EmptyState
+          icon="🚀"
+          title="Welcome to TaskFlow"
+          description="Create your first project to get started."
+        />
+      )}
 
       {/* Progression des projets + Tâches récentes */}
       <div className="grid lg:grid-cols-2 gap-6">

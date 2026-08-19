@@ -4,6 +4,7 @@ import { useProjects } from "../hooks/useProjects";
 import TaskCard from "../components/tasks/TaskCard";
 import TaskForm from "../components/tasks/TaskForm";
 import TaskFilters from "../components/tasks/TaskFilters";
+import { useNotification } from "../hooks/useNotification";
 import KanbanBoard from "../components/tasks/KanbanBoard";
 import Modal from "../components/ui/Modal";
 import Loader from "../components/ui/Loader";
@@ -27,6 +28,7 @@ export default function Tasks() {
   });
 
   const [formOpen, setFormOpen] = useState(false);
+  const { notify } = useNotification();
   const [editingTask, setEditingTask] = useState(null);
   const [deletingTask, setDeletingTask] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -62,15 +64,17 @@ export default function Tasks() {
   }
 
   async function handleSubmit(data) {
-    setSubmitting(true);
-    if (editingTask) {
-      await editTask(editingTask.id, data);
-    } else {
-      await addTask(data);
-    }
-    setSubmitting(false);
-    setFormOpen(false);
+  setSubmitting(true);
+  if (editingTask) {
+    await editTask(editingTask.id, data);
+    notify("Task updated successfully");
+  } else {
+    await addTask(data);
+    notify("Task created successfully");
   }
+  setSubmitting(false);
+  setFormOpen(false);
+}
 
   async function handleToggleStatus(task) {
     const next =
@@ -79,9 +83,10 @@ export default function Tasks() {
   }
 
   async function handleDelete() {
-    await removeTask(deletingTask.id);
-    setDeletingTask(null);
-  }
+  await removeTask(deletingTask.id);
+  notify(`"${deletingTask.title}" deleted`, "danger");
+  setDeletingTask(null);
+}
 
   if (loading) return <Loader label="Loading tasks..." />;
   if (error) return <ErrorState message={error} onRetry={reload} />;

@@ -8,16 +8,19 @@ import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
 import EmptyState from "../components/ui/EmptyState";
 import Button from "../components/ui/Button";
+import { useNotification } from "../hooks/useNotification";
 
 export default function Projects() {
   const { projects, loading, error, reload, addProject } = useProjects();
   const { tasks } = useTasks();
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const { notify } = useNotification();
 
   async function handleCreate(data) {
     setSubmitting(true);
     await addProject(data);
+    notify("Project created successfully");
     setSubmitting(false);
     setModalOpen(false);
   }

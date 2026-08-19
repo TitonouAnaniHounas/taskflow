@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/ui/Input";
-import { useAuth } from "../hooks/useAuth";
 import Button from "../components/ui/Button";
+import { useAuth } from "../hooks/useAuth";
 import { isValidEmail, isValidPassword } from "../utils/validators";
 
 export default function Login() {
@@ -19,12 +19,8 @@ export default function Login() {
 
   function validate() {
     const newErrors = {};
-    if (!isValidEmail(form.email)) {
-      newErrors.email = "Adresse email invalide.";
-    }
-    if (!isValidPassword(form.password)) {
-      newErrors.password = "6 caractères minimum.";
-    }
+    if (!isValidEmail(form.email)) newErrors.email = "Adresse email invalide.";
+    if (!isValidPassword(form.password)) newErrors.password = "6 caractères minimum.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -36,12 +32,17 @@ export default function Login() {
 
     setLoading(true);
     setTimeout(() => {
-      login({ email: form.email });
-      setLoading(false);
-      navigate("/dashboard");
-    }, 800);
+      try {
+        login({ email: form.email, password: form.password });
+        navigate("/dashboard");
+      } catch (err) {
+        setApiError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }, 600);
   }
-  
+
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-ink mb-1">Se connecter</h1>

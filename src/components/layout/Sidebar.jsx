@@ -1,5 +1,5 @@
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const navItems = [
@@ -16,26 +16,22 @@ const bottomItems = [
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
-    const { logout } = useAuth();
-    const navigate = useNavigate();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-    function handleLogout() {
-        logout();
-        navigate("/login");
-    }
-  
-    return (
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
+  return (
     <>
-      {/* Overlay mobile */}
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 bg-black/40 z-30 md:hidden" onClick={onClose} />
       )}
 
       <aside
-        className={`fixed md:static top-0 left-0 h-full w-72 bg-ink border-r border-ink-light 
+        className={`fixed md:static top-0 left-0 h-full w-72 bg-brand border-r border-brand-light 
         flex flex-col z-40 transform transition-transform duration-200
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
@@ -52,8 +48,8 @@ export default function Sidebar({ isOpen, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors
                 ${isActive
-                  ? "bg-ink-light text-amber"
-                  : "text-gray-300 hover:bg-ink-light hover:text-white"}`
+                  ? "bg-brand-light text-amber"
+                  : "text-gray-300 hover:bg-brand-light hover:text-white"}`
               }
             >
               <span className="text-lg">{item.icon}</span>
@@ -62,7 +58,7 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        <div className="px-4 py-5 border-t border-ink-light space-y-1.5">
+        <div className="px-4 py-5 border-t border-brand-light space-y-1.5">
           {bottomItems.map((item) => (
             <NavLink
               key={item.to}
@@ -71,21 +67,21 @@ export default function Sidebar({ isOpen, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors
                 ${isActive
-                  ? "bg-ink-light text-amber"
-                  : "text-gray-300 hover:bg-ink-light hover:text-white"}`
+                  ? "bg-brand-light text-amber"
+                  : "text-gray-300 hover:bg-brand-light hover:text-white"}`
               }
             >
               <span className="text-lg">{item.icon}</span>
               {item.label}
             </NavLink>
           ))}
-           <button
-                onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-brick hover:bg-ink-light w-full transition-colors"
-            >
-                <span className="text-lg">🚪</span>
-                Logout
-            </button>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-brick hover:bg-brand-light w-full transition-colors"
+          >
+            <span className="text-lg">🚪</span>
+            Logout
+          </button>
         </div>
       </aside>
     </>
