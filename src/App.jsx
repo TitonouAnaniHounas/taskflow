@@ -28,7 +28,7 @@ function App() {
       <ThemeProvider>
         <NotificationProvider>
           <AuthProvider>
-            <BrowserRouter>
+            <BrowserRouter basename="/taskflow/">
               <NotificationStack />
               <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
