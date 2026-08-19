@@ -15,6 +15,10 @@ Projet réalisé dans un but d'apprentissage de l'écosystème React (Router, Co
 - Système de notifications global
 - Authentification simulée, multi-comptes avec données isolées par utilisateur
 
+## Démo
+
+🔗 [Voir l'application en ligne](https://titonouananihounas.github.io/taskflow/)
+
 ## Stack technique
 
 | Domaine | Choix |
